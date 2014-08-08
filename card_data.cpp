@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iterator>
 #include <initializer_list>
+#include <map>
 
 #include "./bin_decode.h"
 
@@ -20,7 +21,7 @@ enum class Element : uint8_t {
     NONE = 255
 };
 
-enum class Type {
+enum class Type : uint8_t {
     EVOLUTION = 0,
     BALANCE = 1,
     VITALITY = 2,
@@ -35,11 +36,44 @@ enum class Type {
     NONE = 255
 };
 
+ostream& operator<<(ostream& os, const Element& e) {
+    static const array<const char*, 5> names = {
+        u8"火", u8"水", u8"木", u8"光", u8"闇",
+    };
+    if ((uint8_t)e <= 4) {
+        return os << names[(uint8_t)e];
+    } else {
+        return os << u8"なし";
+    }
+}
+
+ostream& operator<<(ostream& os, const Type& t) {
+    static const map<uint8_t, const char*> names = {
+        {0, u8"進化用"},
+        {1, u8"バランス"},
+        {2, u8"体力"},
+        {3, u8"回復"},
+        {4, u8"ドラゴン"},
+        {5, u8"神"},
+        {6, u8"攻撃"},
+        {7, u8"悪魔"},
+        {12, u8"覚醒用"},
+        {13, u8"特別保護"},
+        {14, u8"強化合成用"},
+    };
+    auto it = names.find((uint8_t)t);
+    if (it != names.end()) {
+        return os << it->second;
+    } else {
+        return os << u8"なし";
+    }
+}
+
 #pragma pack(1)
 struct MonsterData {
 
     char name[97];
-    uint8_t element;
+    Element element;
     uint8_t rare;
     uint16_t no;
     uint16_t cost;
@@ -62,8 +96,8 @@ struct MonsterData {
 
     float exp_type;
     uint8_t unknown5[8];
-    uint8_t type;
-    uint8_t sub_type;
+    Type type;
+    Type sub_type;
 
     uint16_t skill;
     uint8_t unknown6[4];
@@ -72,7 +106,7 @@ struct MonsterData {
     uint8_t ignore2[54];  // enemy stat
     uint8_t unknown7[160];  // lots of zeros?
 
-    uint8_t sub_element;
+    Element sub_element;
 
     uint8_t unknown8[11];  // 究極退化?
     uint16_t kakusei[9];
@@ -100,22 +134,11 @@ T Reverse(T t) {
 }
 
 ostream& operator<<(ostream& os, const MonsterData& m) {
-    os << "name: " << m.name << endl;
-    os << "element: " << (int)m.element << ' ' << (int)m.sub_element << endl;
-    os << "rare: " << (int)m.rare << endl;
-    os << "no.: " << Reverse(m.no) << endl;
-    os << "cost: " << Reverse(m.cost) << endl;
-    os << "max_lv: " << (int)m.max_lv << endl;
-    os << "hp: " << Reverse(m.hp_1) << ' ' << Reverse(m.hp_max) << ' ' << Reverse(m.hp_grow) << endl;
-    os << "atk: " << Reverse(m.atk_1) << ' ' << Reverse(m.atk_max) << ' ' << Reverse(m.atk_grow) << endl;
-    os << "heal: " << Reverse(m.heal_1) << ' ' << Reverse(m.heal_max) << ' ' << Reverse(m.heal_grow) << endl;
-    os << "exp_type: " << (int)Reverse(m.exp_type) << endl;
-    os << "type: " << (int)m.type << ", " << (int)m.sub_type << endl;
-    os << "skill: " << Reverse(m.skill) << ", " << Reverse(m.leader_skill) << endl;
-
-    os << "kakusei: ";
-    for (auto x: m.kakusei) os << Reverse(x) << ' ';
-    os << endl;
+    os << Reverse(m.no) << ' ';
+    os << m.name << ' ';
+    os << m.element << '/' << m.sub_element << ' ';
+    os << m.type << '/' << m.sub_type << ' ';
+    os << Reverse(m.hp_max) << ' ' << Reverse(m.atk_max) << ' ' << Reverse(m.heal_max);
     return os;
 }
 
@@ -128,16 +151,19 @@ int main() {
     ifstream fin("data021.bin");
     fin >> noskipws;
     vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
-    assert(v.size() == 640388);
    
     BinDecode(v);
 
     uint32_t monster_count = Reverse(*reinterpret_cast<uint32_t*>(&v[24]));
     cout << "monster count: " << monster_count << endl;
+
+    assert(v.size() == 32 + monster_count * sizeof(MonsterData));
     
     MonsterData *m = reinterpret_cast<MonsterData*>(&v[32]);
 
-    int x;
-    cin >> x;
-    cout << m[x] << endl;
+    for (size_t i = 0; i < monster_count; i++) {
+        if (m[i].element == Element::LIGHT and (m[i].type == Type::ATTACK or m[i].sub_type == Type::ATTACK)) {
+            cout << m[i] << endl;
+        }
+    }
 }
