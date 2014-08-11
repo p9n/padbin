@@ -3,6 +3,14 @@ OBJS=bin_decode.o
 
 all: $(TARGETS)
 
-$(TARGETS): %: %.cpp $(OBJS)
+card_data.o: enum.h
+
+$(patsubst %, %.o, $(TARGETS)): %.o: %.cpp bin_decode.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 
+$(TARGETS): %: %.o $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+clean:
+	rm -f $(TARGETS) *.o

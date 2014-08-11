@@ -7,70 +7,46 @@
 #include <iterator>
 #include <initializer_list>
 #include <map>
+#include <type_traits>
+#include <boost/range.hpp>
 
 #include "./bin_decode.h"
+#include "./enum.h"
 
 using namespace std;
 
-enum class Element : uint8_t {
-    FIRE = 0,
-    WATER = 1,
-    WOOD = 2,
-    LIGHT = 3,
-    DARK = 4,
-    NONE = 255
-};
-
-enum class Type : uint8_t {
-    EVOLUTION = 0,
-    BALANCE = 1,
-    VITALITY = 2,
-    HEAL = 3,
-    DRAGON = 4,
-    GOD = 5,
-    ATTACK = 6,
-    DEMON = 7,
-    AWAKEN = 12,
-    PROTECT = 13,
-    STRONG = 14,
-    NONE = 255
-};
-
-ostream& operator<<(ostream& os, const Element& e) {
-    static const array<const char*, 5> names = {
-        u8"火", u8"水", u8"木", u8"光", u8"闇",
-    };
-    if ((uint8_t)e <= 4) {
-        return os << names[(uint8_t)e];
-    } else {
-        return os << u8"なし";
-    }
+template<class T>
+T Reverse(T& t) {
+    char *p = reinterpret_cast<char*>(&t);
+    reverse(p, p + sizeof(T));
+    return t;
 }
 
-ostream& operator<<(ostream& os, const Type& t) {
-    static const map<uint8_t, const char*> names = {
-        {0, u8"進化用"},
-        {1, u8"バランス"},
-        {2, u8"体力"},
-        {3, u8"回復"},
-        {4, u8"ドラゴン"},
-        {5, u8"神"},
-        {6, u8"攻撃"},
-        {7, u8"悪魔"},
-        {12, u8"覚醒用"},
-        {13, u8"特別保護"},
-        {14, u8"強化合成用"},
-    };
-    auto it = names.find((uint8_t)t);
-    if (it != names.end()) {
-        return os << it->second;
-    } else {
-        return os << u8"なし";
-    }
+void ReverseAll() {
+}
+
+template<class T, class... Targs>
+void ReverseAll(T& t, Targs& ...args) {
+    Reverse(t);
+    ReverseAll(args...);
 }
 
 #pragma pack(1)
 struct MonsterData {
+    MonsterData(const uint8_t* raw) {
+        copy(raw, raw + sizeof(MonsterData), reinterpret_cast<char*>(this));
+        // reverse multibyte values
+        ReverseAll(no, cost);
+        ReverseAll(hp_1, hp_max, hp_grow);
+        ReverseAll(atk_1, atk_max, atk_grow);
+        ReverseAll(heal_1, heal_max, heal_grow);
+        ReverseAll(exp_type, skill, leader_skill);
+        for (int i = 0; i < 9; i++) {
+            Reverse(kakusei[i]);
+        }
+    }
+
+    MonsterData() = default;
 
     char name[97];
     Element element;
@@ -111,8 +87,14 @@ struct MonsterData {
     uint8_t unknown8[11];  // 究極退化?
     uint16_t kakusei[9];
     uint8_t unknownN[6];
+
+    float plus() const {
+        return hp_max / 10 + atk_max / 5 + heal_max / 3;
+    }
 };
 
+
+static_assert(is_pod<MonsterData>::value, "MonsterData is not pod");
 static_assert(sizeof(MonsterData) == 438, "Incorrect MonsterData struct size");
 
 template<class T>
@@ -126,22 +108,14 @@ void DumpHex(const T& t, ostream& os) {
     os << dec << endl;
 }
 
-template<class T>
-T Reverse(T t) {
-    char *p = reinterpret_cast<char*>(&t);
-    reverse(p, p + sizeof(T));
-    return t;
-}
-
 ostream& operator<<(ostream& os, const MonsterData& m) {
-    os << Reverse(m.no) << ' ';
+    os << m.no << ' ';
     os << m.name << ' ';
     os << m.element << '/' << m.sub_element << ' ';
     os << m.type << '/' << m.sub_type << ' ';
-    os << Reverse(m.hp_max) << ' ' << Reverse(m.atk_max) << ' ' << Reverse(m.heal_max);
+    os << m.hp_max << ' ' << m.atk_max << ' ' << m.heal_max << ' ' << m.plus();
     return os;
 }
-
 
 void DumpFloat(initializer_list<float>&& list) {
     for (auto f: list) DumpHex(f, cout);
@@ -158,8 +132,11 @@ int main() {
     cout << "monster count: " << monster_count << endl;
 
     assert(v.size() == 32 + monster_count * sizeof(MonsterData));
-    
-    MonsterData *m = reinterpret_cast<MonsterData*>(&v[32]);
+
+    vector<MonsterData> m;
+    for (size_t i = 0; i < monster_count; i++) {
+        m.emplace_back(v.data() + 32 + i * sizeof(MonsterData));
+    }
 
     for (size_t i = 0; i < monster_count; i++) {
         if (m[i].element == Element::LIGHT and (m[i].type == Type::ATTACK or m[i].sub_type == Type::ATTACK)) {
