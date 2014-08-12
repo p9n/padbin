@@ -109,11 +109,46 @@ void DumpHex(const T& t, ostream& os) {
 }
 
 ostream& operator<<(ostream& os, const MonsterData& m) {
+    const static unordered_map<uint16_t, const char*> kakusei_name = {
+        {1, u8"HP強化"},
+        {2, u8"攻撃強化"},
+        {3, u8"回復強化"},
+        {4, u8"火ダメージ軽減"},
+        {5, u8"水ダメージ軽減"},
+        {6, u8"木ダメージ軽減"},
+        {7, u8"光ダメージ軽減"},
+        {8, u8"闇ダメージ軽減"},
+        {9, u8"自動回復"},
+        {10, u8"バインド耐性"},
+        {11, u8"暗闇耐性"},
+        {12, u8"お邪魔耐性"},
+        {13, u8"毒耐性"},
+        {14, u8"火ドロップ強化"},
+        {15, u8"水ドロップ強化"},
+        {16, u8"木ドロップ強化"},
+        {17, u8"光ドロップ強化"},
+        {18, u8"闇ドロップ強化"},
+        {19, u8"操作時間延長"},
+        {20, u8"バインド回復"},
+        {21, u8"スキルブースト"},
+        {22, u8"火属性強化"},
+        {23, u8"水属性強化"},
+        {24, u8"木属性強化"},
+        {25, u8"光属性強化"},
+        {26, u8"闇属性強化"},
+        {27, u8"2体攻撃"},
+        {29, u8"封印耐性"},
+    };
+
     os << m.no << ' ';
     os << m.name << ' ';
     os << m.element << '/' << m.sub_element << ' ';
     os << m.type << '/' << m.sub_type << ' ';
     os << m.hp_max << ' ' << m.atk_max << ' ' << m.heal_max << ' ' << m.plus();
+    for (auto x : m.kakusei) {
+        auto it = kakusei_name.find(x);
+        if (it != kakusei_name.end()) os << ' ' << it->second;
+    }
     return os;
 }
 
