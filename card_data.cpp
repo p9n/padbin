@@ -8,10 +8,12 @@
 #include <initializer_list>
 #include <map>
 #include <type_traits>
-#include <boost/range.hpp>
 
 #include "./bin_decode.h"
 #include "./enum.h"
+
+#include <boost/range/algorithm/copy.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 using namespace std;
 
@@ -33,17 +35,17 @@ void ReverseAll(T& t, Targs& ...args) {
 
 #pragma pack(1)
 struct MonsterData {
-    MonsterData(const uint8_t* raw) {
+    explicit MonsterData(const uint8_t* raw) {
         copy(raw, raw + sizeof(MonsterData), reinterpret_cast<char*>(this));
         // reverse multibyte values
-        ReverseAll(no, cost);
+        ReverseAll(no, cost, compose_exp, sell_value);
         ReverseAll(hp_1, hp_max, hp_grow);
         ReverseAll(atk_1, atk_max, atk_grow);
         ReverseAll(heal_1, heal_max, heal_grow);
         ReverseAll(exp_type, skill, leader_skill);
-        for (int i = 0; i < 9; i++) {
-            Reverse(kakusei[i]);
-        }
+        for (auto& x: kakusei) Reverse(x);
+        Reverse(base_monster);
+        for (auto& x: base_maerial) Reverse(x);
     }
 
     MonsterData() = default;
@@ -55,38 +57,45 @@ struct MonsterData {
     uint16_t cost;
     uint8_t unknown1[2];
     uint8_t max_lv;
-    uint8_t ignore1[12];  // uint32_t ComposeExp Unknown02 Sell;
+    uint32_t compose_exp;  // Lv4合成exp(?)
+    uint8_t unknown2[4];
+    uint32_t sell_value;  // Lv10賣價(?)
 
     float hp_1;
     float hp_max;
     float hp_grow;
-    uint8_t unknown2[4];
+    uint8_t unknown3[4];
     float atk_1;
     float atk_max;
     float atk_grow;
-    uint8_t unknown3[4];
+    uint8_t unknown4[4];
     float heal_1;
     float heal_max;
     float heal_grow;
-    uint8_t unknown4[4];
+    uint8_t unknown5[4];
 
     float exp_type;
-    uint8_t unknown5[8];
+    uint8_t unknown6[8];
     Type type;
     Type sub_type;
 
     uint16_t skill;
-    uint8_t unknown6[4];
+    uint8_t unknown7[4];
     uint16_t leader_skill;
 
     uint8_t ignore2[54];  // enemy stat
-    uint8_t unknown7[160];  // lots of zeros?
+    uint8_t unknown8[6];
+
+    uint16_t base_monster;  // 進化前
+    uint16_t base_maerial[5];  // 進化素材
+
+    uint8_t unknown9[142];  // lots of zeros?
 
     Element sub_element;
 
-    uint8_t unknown8[11];  // 究極退化?
+    uint8_t unknown10[11];  // 究極退化?
     uint16_t kakusei[9];
-    uint8_t unknownN[6];
+    uint8_t unknown11[6];
 
     float plus() const {
         return hp_max / 10 + atk_max / 5 + heal_max / 3;
@@ -98,7 +107,7 @@ static_assert(is_pod<MonsterData>::value, "MonsterData is not pod");
 static_assert(sizeof(MonsterData) == 438, "Incorrect MonsterData struct size");
 
 template<class T>
-void DumpHex(const T& t, ostream& os) {
+void HexDump(const T& t, ostream& os) {
     const char *p = reinterpret_cast<const char*>(&t);
     for (size_t i = 0; i < sizeof(T); i++) {
         os << setw(2) << hex << setfill('0') << (int)(unsigned char)p[i];
@@ -149,11 +158,10 @@ ostream& operator<<(ostream& os, const MonsterData& m) {
         auto it = kakusei_name.find(x);
         if (it != kakusei_name.end()) os << ' ' << it->second;
     }
-    return os;
-}
+    os << endl;
 
-void DumpFloat(initializer_list<float>&& list) {
-    for (auto f: list) DumpHex(f, cout);
+    os << "exp: " << m.compose_exp << ", sell: " << m.sell_value << "\n";
+    return os;
 }
 
 int main() {
@@ -173,9 +181,12 @@ int main() {
         m.emplace_back(v.data() + 32 + i * sizeof(MonsterData));
     }
 
-    for (size_t i = 0; i < monster_count; i++) {
-        if (m[i].element == Element::LIGHT and (m[i].type == Type::ATTACK or m[i].sub_type == Type::ATTACK)) {
-            cout << m[i] << endl;
-        }
-    }
+    auto pred = [] (const MonsterData& m) {
+        return m.element == Element::LIGHT and (m.type == Type::ATTACK or m.sub_type == Type::ATTACK);
+    };
+
+    boost::copy(
+        m | boost::adaptors::filtered(pred),
+        ostream_iterator<MonsterData>(cout, "\n")
+    );
 }
