@@ -31,12 +31,12 @@ static_assert(BOOST_PP_VARIADICS == 1, "no variadic macro support");
 
 ENUM_DEF(
     Element, uint8_t,
-    ((FIRE, 0, u8"火"))
-    ((WATER, 1, u8"水"))
-    ((WOOD, 2, u8"木"))
-    ((LIGHT, 3, u8"光"))
-    ((DARK, 4, u8"闇"))
-    ((NONE, 255, u8"なし"))
+    ((FIRE, 0, u8"\x1B[1;31m火\x1B[m"))
+    ((WATER, 1, u8"\x1B[1;36m水\x1B[m"))
+    ((WOOD, 2, u8"\x1B[1;32m木\x1B[m"))
+    ((LIGHT, 3, u8"\x1B[1;33m光\x1B[m"))
+    ((DARK, 4, u8"\x1B[1;35m闇\x1B[m"))
+    ((NONE, 255, u8"  "))
 )
 
 ENUM_DEF(
@@ -51,7 +51,7 @@ ENUM_DEF(
     ((DEMON, 7, u8"悪魔"))
     ((AWAKEN, 12, u8"覚醒用"))
     ((PROTECT, 13, u8"特別保護"))
-    ((STRONG, 14, u8"強化合成用"))
+    ((STRONG, 14, u8"強化合成"))
     ((NONE, 255, u8"なし"))
 )
 

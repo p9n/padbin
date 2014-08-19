@@ -1,17 +1,19 @@
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cassert>
-#include <iterator>
+#include <fstream>
 #include <initializer_list>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
 #include <map>
+#include <sstream>
 #include <type_traits>
+#include <vector>
 
 #include "./bin_decode.h"
 #include "./enum.h"
 
+#include <boost/locale.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 
@@ -100,6 +102,10 @@ struct MonsterData {
     float plus() const {
         return hp_max / 10 + atk_max / 5 + heal_max / 3;
     }
+
+    int count_kakusei(uint16_t x) const {
+        return std::count(std::begin(kakusei), std::end(kakusei), x);
+    }
 };
 
 
@@ -115,6 +121,14 @@ void HexDump(const T& t, ostream& os) {
         else os << ' ';
     }
     os << dec << endl;
+}
+
+size_t string_width(const string& s) {
+    size_t ret = 0;
+    for (auto c : boost::locale::conv::utf_to_utf<char32_t>(s)) {
+        ret += ((int)c >= 128) ? 2 : 1;
+    }
+    return ret;
 }
 
 ostream& operator<<(ostream& os, const MonsterData& m) {
@@ -149,18 +163,24 @@ ostream& operator<<(ostream& os, const MonsterData& m) {
         {29, u8"封印耐性"},
     };
 
-    os << m.no << ' ';
-    os << m.name << ' ';
+    os << setw(4) << m.no << ' ';
+    os << m.name << setw(33 - string_width(m.name)) << ' ';
     os << m.element << '/' << m.sub_element << ' ';
-    os << m.type << '/' << m.sub_type << ' ';
-    os << m.hp_max << ' ' << m.atk_max << ' ' << m.heal_max << ' ' << m.plus();
+
+    ostringstream oss;
+    oss << m.type;
+    if (m.sub_type != Type::NONE) oss << '/' << m.sub_type;
+    os << oss.str() << setw(18 - string_width(oss.str())) << ' ';
+
+    os << setw(4) << (int)m.hp_max << ' ';
+    os << setw(4) << (int)m.atk_max << ' ';
+    os << setw(4) << (int)m.heal_max << ' ';
+    os << setw(7) << fixed << setprecision(3) << m.plus();
     for (auto x : m.kakusei) {
         auto it = kakusei_name.find(x);
         if (it != kakusei_name.end()) os << ' ' << it->second;
     }
-    os << endl;
 
-    os << "exp: " << m.compose_exp << ", sell: " << m.sell_value << "\n";
     return os;
 }
 
@@ -182,7 +202,7 @@ int main() {
     }
 
     auto pred = [] (const MonsterData& m) {
-        return m.element == Element::LIGHT and (m.type == Type::ATTACK or m.sub_type == Type::ATTACK);
+        return m.element == Element::WATER and m.count_kakusei(23) > 0;
     };
 
     boost::copy(
