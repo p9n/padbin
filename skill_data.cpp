@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iterator>
 #include <string>
+#include <regex>
 
 #include "./bin_decode.h"
 
@@ -42,25 +43,23 @@ int main() {
     ifstream fin("data036.bin");
     fin >> noskipws;
     vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
-    assert(v.size() == 204794);
    
     BinDecode(v);
-
-    for (int i = 0; i < 32; i++) {
-        cout << setw(2) << setfill('0') << hex << (int)v[i] << ' ';
-    }
-    cout << endl << dec;
 
     SkillRawData *s = reinterpret_cast<SkillRawData*>(&v[32]);
     uint32_t skill_count = Reverse(*reinterpret_cast<uint32_t*>(&v[24]));
 
     size_t string_table_offset = 32 + sizeof(SkillRawData) * skill_count + 8;
 
+    cout << "skill count: " << skill_count << endl;
+
     for (uint32_t x = 0; x < skill_count; ++x) {
-        auto l = Reverse(s[x].isLeader);
-        if (l == 0 or l == 65535) continue;
-        cout << Reverse(s[x].name) << ' ' << &v[Reverse(s[x].name) + string_table_offset] << endl;
-        cout << Reverse(s[x].description) << ' ' << &v[Reverse(s[x].description) + string_table_offset] << endl;
-        cout << Reverse(s[x].isLeader) << endl;
+        string name = (char*)&v[Reverse(s[x].name) + string_table_offset];
+        string description = (char*)&v[Reverse(s[x].description) + string_table_offset];
+        description = regex_replace(description, regex("\n"), "");
+        bool is_leader = not Reverse(s[x].isLeader);
+        if (is_leader and regex_search(description, regex(u8"少し上がり|1.5倍"))) {
+            cout << name << " - " << description << endl;
+        }
     }
 }

@@ -201,8 +201,13 @@ int main() {
         m.emplace_back(v.data() + 32 + i * sizeof(MonsterData));
     }
 
+    auto key = [](const MonsterData& x) {
+        return x.plus();
+    };
+    sort(m.begin(), m.end(), [key](const MonsterData& x, const MonsterData& y){ return key(x) < key(y); });
+
     auto pred = [] (const MonsterData& m) {
-        return m.element == Element::WATER and m.count_kakusei(23) > 0;
+        return m.element == Element::DARK and (m.type == Type::BALANCE or m.sub_type == Type::BALANCE);
     };
 
     boost::copy(
