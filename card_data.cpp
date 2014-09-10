@@ -185,7 +185,7 @@ ostream& operator<<(ostream& os, const MonsterData& m) {
 }
 
 int main() {
-    ifstream fin("data021.bin");
+    ifstream fin("f/data021.bin");
     fin >> noskipws;
     vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
    
@@ -207,7 +207,7 @@ int main() {
     sort(m.begin(), m.end(), [key](const MonsterData& x, const MonsterData& y){ return key(x) < key(y); });
 
     auto pred = [] (const MonsterData& m) {
-        return m.element == Element::DARK and (m.type == Type::BALANCE or m.sub_type == Type::BALANCE);
+        return m.element == Element::DARK and (m.count_kakusei(21) + m.count_kakusei(26) == 2) and (m.type == Type::DEMON or m.sub_type == Type::DEMON);
     };
 
     boost::copy(

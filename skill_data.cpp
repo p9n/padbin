@@ -40,7 +40,7 @@ T Reverse(T t) {
 
 
 int main() {
-    ifstream fin("data036.bin");
+    ifstream fin("f/data036.bin");
     fin >> noskipws;
     vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
    
