@@ -2,7 +2,7 @@
 
 # a simple script for decompress .ab file
 
-import zlib
+import zlib, os
 
 tar = open('pad.tar', 'w')
 
@@ -19,3 +19,4 @@ while True :
 ab.close()
 tar.close()
 
+os.system("tar -xvf pad.tar --wildcards --no-anchored 'data*.bin'")
