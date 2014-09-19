@@ -44,10 +44,13 @@ struct MonsterData {
         ReverseAll(hp_1, hp_max, hp_grow);
         ReverseAll(atk_1, atk_max, atk_grow);
         ReverseAll(heal_1, heal_max, heal_grow);
-        ReverseAll(exp_type, skill, leader_skill);
-        for (auto& x: kakusei) Reverse(x);
-        Reverse(base_monster);
-        for (auto& x: base_maerial) Reverse(x);
+        ReverseAll(exp_type, skill, leader_skill, dungeon_turn);
+        ReverseAll(dungeon_hp_1, dungeon_hp_max, dungeon_hp_grow);
+        ReverseAll(dungeon_atk_1, dungeon_atk_max, dungeon_atk_grow);
+        ReverseAll(dungeon_def_1, dungeon_def_max, dungeon_def_grow);
+        ReverseAll(dungeon_exp, base_monster);
+        for (auto& x: kakusei) ReverseAll(x);
+        for (auto& x: base_maerial) ReverseAll(x);
     }
 
     MonsterData() = default;
@@ -85,19 +88,35 @@ struct MonsterData {
     uint8_t unknown7[4];
     uint16_t leader_skill;
 
-    uint8_t ignore2[54];  // enemy stat
-    uint8_t unknown8[6];
+    uint8_t unknown8[4];
+    uint16_t dungeon_turn;
+
+    float dungeon_hp_1;
+    float dungeon_hp_max;
+    float dungeon_hp_grow;
+    uint8_t unknown9[4];
+    float dungeon_atk_1;
+    float dungeon_atk_max;
+    float dungeon_atk_grow;
+    uint8_t unknown10[4];
+    float dungeon_def_1;
+    float dungeon_def_max;
+    float dungeon_def_grow;
+    uint8_t unknown11[4];
+    
+    uint8_t unknown12[4];
+    uint16_t dungeon_exp;  // Lv2關卡exp (maybe 4 byte?)
 
     uint16_t base_monster;  // 進化前
     uint16_t base_maerial[5];  // 進化素材
 
-    uint8_t unknown9[142];  // lots of zeros?
+    uint8_t unknown13[142];  // lots of zeros?
 
     Element sub_element;
 
-    uint8_t unknown10[11];  // 究極退化?
+    uint8_t unknown14[11];  // 究極退化?
     uint16_t kakusei[9];
-    uint8_t unknown11[6];
+    uint8_t unknown15[6];
 
     float plus() const {
         return hp_max / 10 + atk_max / 5 + heal_max / 3;
@@ -207,7 +226,7 @@ int main() {
     sort(m.begin(), m.end(), [key](const MonsterData& x, const MonsterData& y){ return key(x) < key(y); });
 
     auto pred = [] (const MonsterData& m) {
-        return m.element == Element::DARK and (m.count_kakusei(21) + m.count_kakusei(26) == 2) and (m.type == Type::DEMON or m.sub_type == Type::DEMON);
+        return m.element == Element::WOOD and (m.type == Type::DEMON or m.sub_type == Type::DEMON);
     };
 
     boost::copy(
