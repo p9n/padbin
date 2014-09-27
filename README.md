@@ -1,32 +1,34 @@
-padbin
+# padbin
 ======
 
 some notes about pad binary data
 
 -----------------------------------------------
 
-data021
-
+## data021
+```
 32 byte header
     byte 24 ~ 27: monster data count (X)
 438X monster data
-
+```
 
 -----------------------------------------------
 
-data036
-
+## data036
+```
 32 byte header
     byte 24 ~ 27: skill raw data count (X)
 48X byte skill raw data
 4 byte unknown
 4 byte string table size (Y)
 Y byte string table
+```
 
 -----------------------------------------------
 
-data056
+## data056
 
+```
 32 byte header
 
 0x112~0x113 box size
@@ -46,9 +48,12 @@ uint8  hp_plus
 uint8  atk_plus
 uint8  heal_plus
 uint8  覚醒数
+```
 
 -----------------------------------------------
 
-backup command
+## backup command
 
+```
 adb backup -nosystem jp.gungho.pad -noapk -noshared -f pad.ab
+```
