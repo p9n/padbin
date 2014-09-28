@@ -1,6 +1,7 @@
 *.o
-card_data
 skill_data
+box_data
+main
 decode
 data*.bin
 f

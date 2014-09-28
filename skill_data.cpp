@@ -18,7 +18,7 @@ struct SkillRawData {
     uint16_t type;
     uint16_t maxLv;
     uint16_t turn;
-    uint16_t isLeader;  // 0: leader skill, 65536: normal skill?
+    uint16_t isLeader;  // 0: leader skill, 65535: normal skill?
     uint32_t param1;
     uint32_t param2;
     uint32_t param3;

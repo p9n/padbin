@@ -1,5 +1,5 @@
-TARGETS=card_data skill_data decode
-OBJS=bin_decode.o
+TARGETS=main skill_data box_data decode
+OBJS=bin_decode.o monster_data.o
 
 all: $(TARGETS)
 

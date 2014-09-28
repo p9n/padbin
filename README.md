@@ -31,8 +31,8 @@ Y byte string table
 ```
 32 byte header
 
-0x112~0x113 box size
-0x114~0x115 monster count
+0x116~0x117 box size
+0x118~0x119 monster count
 30 byte per monster
 
 uint32 exp
