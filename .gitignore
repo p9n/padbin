@@ -1,7 +1,6 @@
 *.o
-skill_data
 box_data
 main
 decode
-data*.bin
 f
+.sconsign.dblite

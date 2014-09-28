@@ -19,6 +19,7 @@ int main() {
 
     PadDb db;
     db.LoadMonsterData("f/data021.bin");
+    db.LoadSkillData("f/data036.bin");
 
     auto& monster_data = db.monster_data();
     using IterType = vector<MonsterData>::const_iterator;
@@ -35,5 +36,9 @@ int main() {
         return m.element == Element::WOOD and (m.type == Type::DEMON or m.sub_type == Type::DEMON);
     };
 
-    for (auto& x : m | boost::adaptors::filtered(pred)) cout << *x << endl;
+    for (auto& x : m | boost::adaptors::filtered(pred)) {
+        cout << *x << endl;
+        // cout << db.skill(x->skill).name << endl;
+        // cout << db.skill(x->leader_skill).name << endl;
+    }
 }
