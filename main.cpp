@@ -18,8 +18,9 @@ using namespace std;
 int main() {
 
     PadDb db;
-    db.LoadMonsterData("f/data021.bin");
-    db.LoadSkillData("f/data036.bin");
+    db.load_monster_data("f/data021.bin");
+    db.load_skill_data("f/data036.bin");
+    db.load_box_data("f/data056.bin");
 
     auto& monster_data = db.monster_data();
     using IterType = vector<MonsterData>::const_iterator;

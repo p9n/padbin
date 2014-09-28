@@ -10,7 +10,7 @@
 using namespace std;
 
 MonsterData::MonsterData(const uint8_t* raw) {
-    copy(raw, raw + sizeof(MonsterData), reinterpret_cast<char*>(this));
+    copy(raw, raw + sizeof(*this), reinterpret_cast<char*>(this));
     // reverse multibyte values
     ReverseAll(no, cost, compose_exp, sell_value);
     ReverseAll(hp_1, hp_max, hp_grow);

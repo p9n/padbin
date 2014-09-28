@@ -1,6 +1,5 @@
 *.o
-box_data
 main
 decode
 f
-.sconsign.dblite
+.scons*
