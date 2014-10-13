@@ -13,5 +13,5 @@ SkillRawData::SkillRawData(const uint8_t* raw) {
 SkillData::SkillData(const uint8_t* raw, const char* string_table_base) : SkillRawData(raw) {
     name = std::string(string_table_base + name_offset);
     description = std::string(string_table_base + description_offset);
-    description = std::regex_replace(description, std::regex("\n"), "");
+    description = std::regex_replace(description, std::regex("\n"), std::string());
 }
