@@ -74,11 +74,11 @@ struct MonsterData {
     Element sub_element;
 
     uint8_t unknown14[11];  // 究極退化?
-    uint16_t kakusei[9];
+    Awoken awoken[9];
     uint8_t unknown15[6];
 
     float plus() const;
-    int count_kakusei(uint16_t x) const;
+    int count_awoken(Awoken x) const;
 };
 
 static_assert(std::is_trivial<MonsterData>::value, "MonsterData is not trivial");

@@ -34,7 +34,7 @@ int main() {
 
     auto pred = [] (const IterType& it) {
         auto& m = *it;
-        return m.element == Element::WOOD and (m.type == Type::DEMON or m.sub_type == Type::DEMON);
+        return m.element == Element::WOOD and (m.type == Type::DEVIL or m.sub_type == Type::DEVIL);
     };
 
     for (auto& x : m | boost::adaptors::filtered(pred)) {
