@@ -1,3 +1,5 @@
+#include <type_traits>
+
 #pragma pack(1)
 struct BoxData {
     uint32_t exp;
@@ -12,10 +14,11 @@ struct BoxData {
     uint8_t hp_plus;
     uint8_t atk_plus;
     uint8_t heal_plus;
-    uint8_t kakusei;
+    uint8_t awoken_count;
 
     BoxData(const uint8_t* raw);
-    BoxData() = delete;
+    BoxData() = default;
 };
 
+static_assert(std::is_pod<BoxData>::value, "BoxData is not pod");
 static_assert(sizeof(BoxData) == 30, "Incorrect BoxData struct size");

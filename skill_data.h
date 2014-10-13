@@ -1,3 +1,4 @@
+#include <type_traits>
 #include <string>
 
 struct SkillRawData {
@@ -17,9 +18,10 @@ struct SkillRawData {
     uint32_t param8;
 
     SkillRawData(const uint8_t* raw);
-    SkillRawData() = delete;
+    SkillRawData() = default;
 };
 
+static_assert(std::is_pod<SkillRawData>::value, "SkillRawData is not pod");
 static_assert(sizeof(SkillRawData) == 48, "Incorrect SkillRawData struct size");
 
 struct SkillData : public SkillRawData {

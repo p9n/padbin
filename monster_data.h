@@ -81,7 +81,6 @@ struct MonsterData {
     int count_awoken(Awoken x) const;
 };
 
-static_assert(std::is_trivial<MonsterData>::value, "MonsterData is not trivial");
 static_assert(std::is_pod<MonsterData>::value, "MonsterData is not pod");
 static_assert(sizeof(MonsterData) == 438, "Incorrect MonsterData struct size");
 
