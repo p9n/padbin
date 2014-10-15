@@ -66,3 +66,11 @@ const SkillData& PadDb::skill(size_t no) const {
 const vector<BoxData>& PadDb::box_data() const {
     return box_data_;
 }
+
+vector<uint16_t> PadDb::evolution_of(size_t no) const {
+    vector<uint16_t> result;
+    for (auto& m : monster_data_) {
+        if (m.base_monster == no) result.push_back(m.no);
+    }
+    return result;
+}

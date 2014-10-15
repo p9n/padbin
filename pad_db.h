@@ -25,6 +25,8 @@ public:
 
     const vector<BoxData>& box_data() const;
 
+    vector<uint16_t> evolution_of(size_t no) const;
+
 private:
 
     vector<MonsterData> monster_data_;
