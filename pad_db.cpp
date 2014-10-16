@@ -1,5 +1,7 @@
 #include "./pad_db.h"
 
+#include "./bin_decode.h"
+
 void PadDb::load_monster_data(const std::string& path) {
     ifstream fin(path);
     fin >> noskipws;
@@ -57,6 +59,10 @@ const vector<MonsterData>& PadDb::monster_data() const {
 
 const MonsterData& PadDb::monster(size_t no) const {
     return monster_data_.at(no);
+}
+
+const vector<SkillData>& PadDb::skill_data() const {
+    return skill_data_;
 }
 
 const SkillData& PadDb::skill(size_t no) const {

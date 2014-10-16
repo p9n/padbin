@@ -7,7 +7,6 @@
 #include "./monster_data.h"
 #include "./skill_data.h"
 #include "./box_data.h"
-#include "./bin_decode.h"
 
 class PadDb {
 public:
@@ -17,19 +16,21 @@ public:
 
     void load_box_data(const std::string& path);
 
-    const vector<MonsterData>& monster_data() const;
+    const std::vector<MonsterData>& monster_data() const;
 
     const MonsterData& monster(size_t no) const;
 
+    const std::vector<SkillData>& skill_data() const;
+
     const SkillData& skill(size_t no) const;
 
-    const vector<BoxData>& box_data() const;
+    const std::vector<BoxData>& box_data() const;
 
-    vector<uint16_t> evolution_of(size_t no) const;
+    std::vector<uint16_t> evolution_of(size_t no) const;
 
 private:
 
-    vector<MonsterData> monster_data_;
-    vector<SkillData> skill_data_;
-    vector<BoxData> box_data_;
+    std::vector<MonsterData> monster_data_;
+    std::vector<SkillData> skill_data_;
+    std::vector<BoxData> box_data_;
 };

@@ -79,6 +79,7 @@ struct MonsterData {
 
     float plus() const;
     int count_awoken(Awoken x) const;
+    bool has_type(Type t) const;
 };
 
 static_assert(std::is_pod<MonsterData>::value, "MonsterData is not pod");

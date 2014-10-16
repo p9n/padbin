@@ -34,6 +34,9 @@ int MonsterData::count_awoken(Awoken x) const {
     return std::count(std::begin(awoken), std::end(awoken), x);
 }
 
+bool MonsterData::has_type(Type t) const {
+    return type == t or sub_type == t;
+}
 
 ostream& operator<<(ostream& os, const MonsterData& m) {
     os << setw(4) << m.no << ' ';
