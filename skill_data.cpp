@@ -6,7 +6,7 @@
 
 SkillRawData::SkillRawData(const uint8_t* raw) {
     std::copy(raw, raw + sizeof(*this), reinterpret_cast<char*>(this));
-    ReverseAll(name_offset, description_offset, type, max_lv, turn, is_leader);
+    ReverseAll(name_offset, description_offset, type, max_lv, turn, is_active_skill);
     ReverseAll(param1, param2, param3, param4, param5, param6, param7, param8);
 }
 
