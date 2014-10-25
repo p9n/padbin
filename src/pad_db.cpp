@@ -1,25 +1,22 @@
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "./pad_db.h"
 #include "./bin_decode.h"
 
 using namespace std;
 
-PadDb::PadDb(std::string folder) {
+PadDb::PadDb(const boost::filesystem::path& folder) {
     const string DATA021 = "data021.bin";
     const string DATA036 = "data036.bin";
     const string DATA056 = "data056.bin";
 
-    using path = boost::filesystem::path;
-    path p(folder);
-
-    load_monster_data((p / DATA021).string());
-    load_skill_data((p / DATA036).string());
-    load_box_data((p / DATA056).string());
+    load_monster_data(folder / DATA021);
+    load_skill_data(folder / DATA036);
+    load_box_data(folder / DATA056);
 }
 
-void PadDb::load_monster_data(const std::string& path) {
-    ifstream fin(path);
+void PadDb::load_monster_data(const boost::filesystem::path& filename) {
+    boost::filesystem::ifstream fin(filename);
     fin >> noskipws;
     vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
@@ -33,8 +30,8 @@ void PadDb::load_monster_data(const std::string& path) {
     }
 }
 
-void PadDb::load_skill_data(const std::string& path) {
-    ifstream fin(path);
+void PadDb::load_skill_data(const boost::filesystem::path& filename) {
+    boost::filesystem::ifstream fin(filename);
     fin >> noskipws;
     vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
@@ -49,8 +46,8 @@ void PadDb::load_skill_data(const std::string& path) {
     }
 }
 
-void PadDb::load_box_data(const std::string& path) {
-    ifstream fin(path);
+void PadDb::load_box_data(const boost::filesystem::path& filename) {
+    boost::filesystem::ifstream fin(filename);
     fin >> noskipws;
     vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);

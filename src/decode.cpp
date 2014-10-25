@@ -4,6 +4,9 @@
 #include <vector>
 #include <iterator>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
+
 #include "./bin_decode.h"
 
 using namespace std;
@@ -14,8 +17,10 @@ int main(int argc, char** argv) {
         return 1;
     }
     
-    ifstream fin(argv[1]);
-    ofstream fout((string(argv[1]) + ".decode").c_str());
+    boost::filesystem::path path(argv[1]);
+    boost::filesystem::ifstream fin(path);
+    boost::filesystem::ofstream fout(path.replace_extension(".decode"));
+
     if (not fin or not fout) {
         cout << "Cannot open file\n";
         return 1;
