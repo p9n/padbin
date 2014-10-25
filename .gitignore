@@ -1,7 +1,4 @@
-*.o
-main
-decode
-unittest
 f
 .scons*
-libpadbin.a
+out/*
+build/*
