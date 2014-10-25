@@ -21,10 +21,10 @@ PadDb::PadDb(std::string folder) {
 void PadDb::load_monster_data(const std::string& path) {
     ifstream fin(path);
     fin >> noskipws;
-    vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
+    vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
 
-    uint32_t monster_count = Reverse(*reinterpret_cast<uint32_t*>(&v[24]));
+    uint32_t monster_count = Reverse(reinterpret_cast<uint32_t&>(v[24]));
 
     assert(v.size() == 32 + monster_count * sizeof(MonsterData));
 
@@ -36,10 +36,10 @@ void PadDb::load_monster_data(const std::string& path) {
 void PadDb::load_skill_data(const std::string& path) {
     ifstream fin(path);
     fin >> noskipws;
-    vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
+    vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
 
-    uint32_t skill_count = Reverse(*reinterpret_cast<uint32_t*>(&v[24]));
+    uint32_t skill_count = Reverse(reinterpret_cast<uint32_t&>(v[24]));
 
     size_t string_table_offset = 32 + sizeof(SkillRawData) * skill_count + 8;
     const char* string_table_base = reinterpret_cast<char*>(v.data()) + string_table_offset;
@@ -52,13 +52,13 @@ void PadDb::load_skill_data(const std::string& path) {
 void PadDb::load_box_data(const std::string& path) {
     ifstream fin(path);
     fin >> noskipws;
-    vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
+    vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
 
     // TODO: need a better way to locate these offset
-    // uint16_t box_size = Reverse(*reinterpret_cast<uint16_t*>(&v[0x116]));
-    uint16_t box_count = Reverse(*reinterpret_cast<uint16_t*>(&v[0x118]));
-    constexpr auto BOX_OFFSET = 0x11A;
+    // uint16_t box_size = Reverse(reinterpret_cast<uint16_t&>(&v[278]));
+    uint16_t box_count = Reverse(reinterpret_cast<uint16_t&>(v[280]));
+    constexpr auto BOX_OFFSET = 282;
 
     for (size_t i = 0; i < box_count; i++) {
         box_data_.emplace_back(v.data() + BOX_OFFSET + i * sizeof(BoxData));

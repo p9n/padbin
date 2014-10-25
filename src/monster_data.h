@@ -10,7 +10,7 @@
 
 #pragma pack(1)
 struct MonsterData {
-    explicit MonsterData(const uint8_t* raw);
+    explicit MonsterData(const unsigned char* raw);
     MonsterData() = default;
 
     char name[97];

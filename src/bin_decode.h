@@ -1,6 +1,5 @@
 #pragma once
 
 #include <vector>
-#include <cstdint>
 
-void BinDecode(std::vector<std::uint8_t>& v);
+void BinDecode(std::vector<unsigned char>& v);

@@ -9,8 +9,8 @@
 
 using namespace std;
 
-MonsterData::MonsterData(const uint8_t* raw) {
-    copy(raw, raw + sizeof(*this), reinterpret_cast<char*>(this));
+MonsterData::MonsterData(const unsigned char* raw) {
+    copy(raw, raw + sizeof(*this), reinterpret_cast<unsigned char*>(this));
     // reverse multibyte values
     ReverseAll(no, cost, compose_exp, sell_value);
     ReverseAll(hp_1, hp_max, hp_grow);
@@ -48,9 +48,9 @@ ostream& operator<<(ostream& os, const MonsterData& m) {
     if (m.sub_type != Type::NONE) oss << '/' << m.sub_type;
     os << oss.str() << setw(18 - string_width(oss.str())) << ' ';
 
-    os << setw(4) << (int)m.hp_max << ' ';
-    os << setw(4) << (int)m.atk_max << ' ';
-    os << setw(4) << (int)m.heal_max << ' ';
+    os << setw(4) << static_cast<int>(m.hp_max) << ' ';
+    os << setw(4) << static_cast<int>(m.atk_max) << ' ';
+    os << setw(4) << static_cast<int>(m.heal_max) << ' ';
     os << setw(7) << fixed << setprecision(3) << m.plus();
     for (auto x : m.awoken) os << ' ' << x;
 

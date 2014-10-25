@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     fin >> noskipws;
-    vector<uint8_t> v{istream_iterator<char>(fin), istream_iterator<char>()};
+    vector<unsigned char> v{istream_iterator<unsigned char>(fin), istream_iterator<unsigned char>()};
     BinDecode(v);
     fout.write(reinterpret_cast<char*>(v.data()), v.size());
 }

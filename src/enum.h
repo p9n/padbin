@@ -21,13 +21,13 @@ static_assert(BOOST_PP_VARIADICS == 1, "no variadic macro support");
     \
     inline std::ostream& operator<<(std::ostream& os, name e) { \
         static const std::unordered_map<base, const char*> m = {BOOST_PP_SEQ_FOR_EACH(STRING_DEF, base, members)}; \
-        auto it = m.find((base)e); \
+        auto it = m.find(static_cast<base>(e)); \
         return os << (it == m.end() ? "" : it->second); \
     }
 
 #define MEMBER_DEF(s, data, elem) BOOST_PP_TUPLE_ELEM(0, elem) = BOOST_PP_TUPLE_ELEM(1, elem),
 
-#define STRING_DEF(s, data, elem) {(data)decltype(e)::BOOST_PP_TUPLE_ELEM(0, elem), BOOST_PP_TUPLE_ELEM(2, elem)},
+#define STRING_DEF(s, data, elem) {static_cast<data>(decltype(e)::BOOST_PP_TUPLE_ELEM(0, elem)), BOOST_PP_TUPLE_ELEM(2, elem)},
 
 ENUM_DEF(
     Element, uint8_t,

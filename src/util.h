@@ -27,9 +27,9 @@ void ReverseAll(T& t, Targs& ...args) {
 
 template<class T>
 void HexDump(const T& t, std::ostream& os) {
-    const char *p = reinterpret_cast<const char*>(&t);
+    const unsigned char *p = reinterpret_cast<const unsigned char*>(&t);
     for (size_t i = 0; i < sizeof(T); i++) {
-        os << std::setw(2) << std::hex << std::setfill('0') << (int)(unsigned char)p[i];
+        os << std::setw(2) << std::hex << std::setfill('0') << static_cast<unsigned int>(p[i]);
         if (i % 10 == 9) os << std::endl;
         else os << ' ';
     }
@@ -39,7 +39,7 @@ void HexDump(const T& t, std::ostream& os) {
 inline size_t string_width(const std::string& s) {
     size_t ret = 0;
     for (auto c : boost::locale::conv::utf_to_utf<char32_t>(s)) {
-        ret += ((int)c >= 128) ? 2 : 1;
+        ret += (static_cast<int>(c) >= 128) ? 2 : 1;
     }
     return ret;
 }

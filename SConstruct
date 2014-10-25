@@ -1,4 +1,4 @@
-env = Environment(parse_flags = "-O3 -pedantic -Wall -Wvla -std=c++11 -pthread -lboost_filesystem -lboost_system")  # Initialize the environment
+env = Environment(parse_flags = "-O3 -pedantic -Wall -Wvla -Wold-style-cast -std=c++11 -pthread -lboost_filesystem -lboost_system")  # Initialize the environment
 
 env.VariantDir(variant_dir = 'build', src_dir = 'src', duplicate = 0)
 

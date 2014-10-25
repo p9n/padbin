@@ -16,7 +16,7 @@ struct BoxData {
     uint8_t heal_plus;
     uint8_t awoken_count;
 
-    BoxData(const uint8_t* raw);
+    BoxData(const unsigned char* raw);
     BoxData() = default;
 };
 

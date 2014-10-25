@@ -17,7 +17,7 @@ struct SkillRawData {
     uint32_t param7;
     uint32_t param8;
 
-    SkillRawData(const uint8_t* raw);
+    SkillRawData(const unsigned char* raw);
     SkillRawData() = default;
 };
 
@@ -28,6 +28,6 @@ struct SkillData : public SkillRawData {
     std::string name;
     std::string description;
 
-    SkillData(const uint8_t* raw, const char* string_table_base);
+    SkillData(const unsigned char* raw, const char* string_table_base);
     SkillData() = delete;
 };
