@@ -3,11 +3,10 @@
 #include <algorithm>
 #include <iostream>
 #include <type_traits>
+#include <array>
 
 #include "./enum.h"
 #include "./util.h"
-
-using namespace std;
 
 #pragma pack(1)
 struct MonsterData {
@@ -67,14 +66,14 @@ struct MonsterData {
     uint16_t dungeon_exp;  // Lv2關卡exp (maybe 4 byte?)
 
     uint16_t base_monster;  // 進化前
-    uint16_t base_maerial[5];  // 進化素材
+    std::array<uint16_t, 5> base_maerial;  // 進化素材
 
     uint8_t unknown13[142];  // lots of zeros?
 
     Element sub_element;
 
     uint8_t unknown14[11];  // 究極退化?
-    Awoken awoken[9];
+    std::array<Awoken, 9> awoken;
     uint8_t unknown15[6];
 
     float plus() const;

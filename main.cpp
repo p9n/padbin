@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cassert>
 #include <fstream>
 #include <initializer_list>
 #include <iomanip>
@@ -16,11 +15,11 @@
 using namespace std;
 
 int main() {
-
-    PadDb db;
-    db.load_monster_data("f/data021.bin");
-    db.load_skill_data("f/data036.bin");
-    db.load_box_data("f/data056.bin");
+    PadDb db("f/");
+    
+    cout << "monster count: " << db.monster_data().size() << endl;
+    cout << "skill count: " << db.skill_data().size() << endl;
+    cout << "box_count: " << db.box_data().size() << endl;
 
     auto& monster_data = db.monster_data();
     using IterType = vector<MonsterData>::const_iterator;
