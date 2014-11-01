@@ -92,3 +92,28 @@ vector<uint16_t> PadDb::evolution_of(size_t no) const {
     }
     return result;
 }
+
+PadDb* PadDb_new(const char* path) {
+    return new PadDb(path);
+}
+
+void PadDb_delete(PadDb* db) {
+    delete db;
+}
+
+const MonsterData* PadDb_monster_data(const PadDb* db) {
+    return db->monster_data().data();
+}
+
+const size_t PadDb_monster_data_size(const PadDb* db) {
+    return db->monster_data().size();
+}
+
+const BoxData* PadDb_box_data(const PadDb* db) {
+    return db->box_data().data();
+}
+
+const size_t PadDb_box_data_size(const PadDb* db) {
+    return db->box_data().size();
+}
+

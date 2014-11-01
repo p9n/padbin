@@ -30,3 +30,13 @@ private:
     std::vector<SkillData> skill_data_;
     std::vector<BoxData> box_data_;
 };
+
+// c interface for python
+extern "C" {
+    PadDb* PadDb_new(const char* path);
+    void PadDb_delete(PadDb* db);
+    const MonsterData* PadDb_monster_data(const PadDb* db);
+    const size_t PadDb_monster_data_size(const PadDb* db);
+    const BoxData* PadDb_box_data(const PadDb* db);
+    const size_t PadDb_box_data_size(const PadDb* db);
+}
