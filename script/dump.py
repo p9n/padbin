@@ -57,7 +57,7 @@ class MonsterData(Structure) :
         ('dungeon_exp', c_ushort),
 
         ('base_monster', c_ushort),
-        ('base_maerial', c_ushort * 5),
+        ('base_material', c_ushort * 5),
 
         ('unknown13', c_ubyte * 142),
 
@@ -108,7 +108,7 @@ for i in range(dll.PadDb_monster_data_size(db)) :
     for name, _ in MonsterData._fields_ :
         if name[:7] == "unknown" :
             continue
-        elif name == "base_maerial" or name == "awoken" :
+        elif name == "base_material" or name == "awoken" :
             obj[name] = [x for x in m.__getattribute__(name)]
             pass
         else :

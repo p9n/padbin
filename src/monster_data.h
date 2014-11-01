@@ -66,7 +66,7 @@ struct MonsterData {
     uint16_t dungeon_exp;  // Lv2關卡exp (maybe 4 byte?)
 
     uint16_t base_monster;  // 進化前
-    std::array<uint16_t, 5> base_maerial;  // 進化素材
+    std::array<uint16_t, 5> base_material;  // 進化素材
 
     uint8_t unknown13[142];  // lots of zeros?
 

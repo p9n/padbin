@@ -83,7 +83,7 @@ TEST_F(PadDbTest, MonsterData004) {
     EXPECT_EQ(3, m.base_monster);
     EXPECT_EQ(
         (array<uint16_t, 5>({154, 153, 152, 155, 147})),
-        m.base_maerial);
+        m.base_material);
 
     EXPECT_EQ(
         (array<Awoken, 9>({Awoken::ENHANCED_HP, Awoken::ENHANCED_ATTACK, Awoken::SKILL_BOOST})),

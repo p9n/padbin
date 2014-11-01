@@ -22,7 +22,7 @@ MonsterData::MonsterData(const unsigned char* raw) {
     ReverseAll(dungeon_def_1, dungeon_def_max, dungeon_def_grow);
     ReverseAll(dungeon_exp, base_monster);
     for (auto& x: awoken) ReverseAll(x);
-    for (auto& x: base_maerial) ReverseAll(x);
+    for (auto& x: base_material) ReverseAll(x);
 }
 
 
