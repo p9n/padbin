@@ -37,6 +37,9 @@ void PadDb::load_skill_data(const boost::filesystem::path& filename) {
     BinDecode(v);
 
     uint32_t skill_count = Reverse(reinterpret_cast<uint32_t&>(v[24]));
+    uint32_t string_table_size = Reverse(reinterpret_cast<uint32_t&>(v[32 + sizeof(SkillRawData) * skill_count + 4]));
+
+    assert(v.size() == 32 + sizeof(SkillRawData) * skill_count + 8 + string_table_size);
 
     size_t string_table_offset = 32 + sizeof(SkillRawData) * skill_count + 8;
     const char* string_table_base = reinterpret_cast<char*>(v.data()) + string_table_offset;

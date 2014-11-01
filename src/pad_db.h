@@ -5,12 +5,13 @@
 #include <vector>
 
 #include <boost/filesystem/path.hpp>
+#include <boost/noncopyable.hpp>
 
 #include "./monster_data.h"
 #include "./skill_data.h"
 #include "./box_data.h"
 
-class PadDb {
+class PadDb : public boost::noncopyable {
 public:
     PadDb(const boost::filesystem::path& folder);
     const std::vector<MonsterData>& monster_data() const;
